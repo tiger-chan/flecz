@@ -4,10 +4,23 @@
 const std = @import("std");
 const testing = std.testing;
 
-pub export fn add(a: i32, b: i32) i32 {
-    return a + b;
+pub const builtin_components = @import("flecs/builtin_components.zig");
+
+const define = @import("flecs/define.zig");
+pub const EcsIter = @import("flecs/iter.zig");
+pub const World = @import("flecs/world.zig");
+pub const FlecsAllocator = @import("flecs/allocator.zig");
+
+
+test "ecs int test" {
+    var buffer: [1024 * 1024 * 4]u8 = .{0} ** (1024 * 1024 * 4);
+    var memory = std.heap.FixedBufferAllocator.init(&buffer);
+    FlecsAllocator.init(memory.allocator());
+    defer FlecsAllocator.deinit();
+
+    var world = World.init();
+    defer world.?.deinit();
+
+    try testing.expect(world != null);
 }
 
-test "basic add functionality" {
-    try testing.expect(add(3, 7) == 10);
-}
